@@ -6,6 +6,7 @@ import plotly_express as px
 from streamlit_option_menu import option_menu
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
+import altair as alt
 
 st.set_page_config(
     page_title="ICE",
