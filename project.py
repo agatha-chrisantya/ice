@@ -73,9 +73,9 @@ if opt == "ICE":
 
 else : 
     #Untuk input data
-    dfins1 = pd.read_csv("data ice.csv", sep=";")
-    dfins2 = pd.read_csv("data ice_2.csv", sep=";")
-    dfins3 = pd.read_csv("data ice_3.csv", sep=";")
+    dfins1 = pd.read_excel("data ice.xlsx", "ig_ICE")
+    dfins2 = pd.read_excel("data ice.xlsx", "ig_JIEXPO")
+    dfins3 = pd.read_excel("data ice.xlsx", "ig_JCC")
 
     data4 = {
         'Jumlah Pengikut' :  [78600,18300,83500],
@@ -93,44 +93,19 @@ else :
     df_merged = pd.concat([dfins1, dfins2, dfins3], ignore_index=True)    
     
     #mengubah tipe data tanggal dari object (string) ke dalam tanggal
-    df_merged['Tanggal'] = pd.to_datetime(df_merged['Tanggal'])
+    df_merged['Tanggal Upload'] = pd.to_datetime(df_merged['Tanggal Upload'])
+
+    df_merged['tahun'] = df_merged['Tanggal Upload'].dt.year
+    CURR_YEAR = df_merged['tahun'].max()
+    PREV_YEAR = CURR_YEAR - 1
 
     #Pemilihan Grafik
     grafik_perbandingan = st.selectbox(
         "Silahkan Pilih Grafik Perbandingan Instagram",
-        ['Engagement Instagram','Like','Komen']
+        ['Engagement Instagram','Komen']
     )
-    if grafik_perbandingan == 'Like':
-        #Membuat grafik line
-        chart1 = alt.Chart(df_merged).mark_line().encode(
-            alt.X('Tanggal', title='Waktu',axis=alt.Axis(labelAngle=0)),
-            alt.Y('Like', title='Jumlah Like', aggregate='sum'),
-            color='Perusahaan'
-        ).properties(   
-            width=600,
-            height=400
-        )
+    if grafik_perbandingan == 'Engagement Instagram':
 
-        #Menampilkan grafik
-        st.subheader('Grafik Perbandingan Jumlah Like Dari ICE JCC dan JIEXPO')
-        st.altair_chart(chart1, use_container_width=True)
-
-    elif grafik_perbandingan == 'Komen' :
-        #Membuat grafik line
-        chart2 = alt.Chart(df_merged).mark_line().encode(
-            alt.X('Tanggal', title='Waktu',axis=alt.Axis(labelAngle=0)),
-            alt.Y('Komentar', title='Jumlah Komen', aggregate='sum'),
-            color='Perusahaan'
-        ).properties(   
-            width=600,
-            height=400
-        )
-
-        #Menampilkan grafik
-        st.subheader('Grafik Perbandingan Jumlah Komen Dari ICE JCC dan JIEXPO')
-        st.altair_chart(chart2, use_container_width=True)
-
-    else : 
         #Membuat grafik histogram
         chart3 = alt.Chart(df4).mark_bar().encode(
             alt.X('Perusahaan', title=None, axis=alt.Axis(labelAngle=0, labels=False)),
@@ -149,3 +124,124 @@ else :
 
         st.subheader('Grafik Jumlah Post berdasarkan Perusahaan')
         st.altair_chart(chart4, use_container_width=True)
+       
+
+        #Korelasi engandmen instagram dengan reaction dari post instagram
+
+        st.write("Kemudian bagaimana pengaruh like terhadap engadmen instagram?")
+        st.write("Korelasi keduanya dapat dilihat pada grafik di bawah : ")
+        
+        freq = st.selectbox(
+            "Silahkan Pilih Tipe Grafik", ["Harian", "Bulanan"])
+
+        timeUnit = {
+            'Harian':'yearmonthdate',
+            'Bulanan':'yearmonth'
+        }
+        if freq == 'Harian' : 
+            chart1 = alt.Chart(df_merged[df_merged['tahun'] == CURR_YEAR]).mark_line().encode(
+                alt.X('Tanggal Upload', title='Waktu', timeUnit=timeUnit[freq], axis=alt.Axis(tickCount='day')),
+                alt.Y('Jumlah Like', title='Jumlah Like', aggregate='sum'),
+                color='Perusahaan'
+            ).properties(   
+                width=600,
+                height=400
+            )
+
+            #Menampilkan grafik
+            st.subheader('Grafik Perbandingan Jumlah Like Dari ICE, JCC dan JIEXPO')
+            st.altair_chart(chart1, use_container_width=True)
+
+        else :
+            chart1 = alt.Chart(df_merged[df_merged['tahun'] == CURR_YEAR]).mark_line().encode(
+                alt.X('Tanggal Upload', title='Waktu', timeUnit=timeUnit[freq], axis=alt.Axis(tickCount='month')),
+                alt.Y('Jumlah Like', title='Jumlah Like', aggregate='sum'),
+                color='Perusahaan'
+            ).properties(   
+                width=600,
+                height=400
+            )
+
+            #Menampilkan grafik
+            st.subheader('Grafik Perbandingan Jumlah Like Dari ICE, JCC dan JIEXPO')
+            st.altair_chart(chart1, use_container_width=True)
+
+        #Menampikan top 5 kategori untuk tiap perushaan
+        st.write('Berdasarkan grafik diatas berikut adalah top 5 kategori untuk tiap perusahaan')
+
+        def get_top_categories(df_merged, perusahaan, top_n=5):
+            perusahaan_df = df_merged[df_merged['Perusahaan'] == perusahaan]
+            top_categories = perusahaan_df.groupby('Isi Konten')['Jumlah Like'].sum().nlargest(top_n)
+            return top_categories
+
+        # Membuat dictionary untuk menyimpan hasil dari setiap perusahaan
+        top_categories_perusahaan_dict = {}
+
+        list_perusahaan = df_merged['Perusahaan'].unique().tolist()
+
+        for perusahaan in list_perusahaan:
+            top_categories_perusahaan_dict[perusahaan] = get_top_categories(df_merged, perusahaan)
+
+        # Menampilkan hasil dalam bentuk data frame
+        top_categories_df = pd.DataFrame(top_categories_perusahaan_dict)
+        top_categories_df = top_categories_df.rename_axis('Top Kategori').reset_index()
+        st.dataframe(top_categories_df) 
+
+    else :
+        #Page Komen
+        freq = st.selectbox(
+            "Silahkan Pilih Tipe Grafik", ["Harian", "Bulanan"])
+
+        timeUnit = {
+            'Harian':'yearmonthdate',
+            'Bulanan':'yearmonth'
+        }
+
+        if freq == 'Harian' : 
+            chart2 = alt.Chart(df_merged[df_merged['tahun'] == CURR_YEAR]).mark_line().encode(
+                alt.X('Tanggal Upload', title='Waktu', timeUnit=timeUnit[freq], axis=alt.Axis(tickCount='day')),
+                alt.Y('Jumlah Komentar', title='Jumlah Komen', aggregate='sum'),
+                color='Perusahaan'
+            ).properties(   
+                width=600,
+                height=400
+            )
+
+            #Menampilkan grafik
+            st.subheader('Grafik Perbandingan Jumlah Komen Dari ICE JCC dan JIEXPO')
+            st.altair_chart(chart2, use_container_width=True)
+        
+        else : 
+            chart2 = alt.Chart(df_merged[df_merged['tahun'] == CURR_YEAR]).mark_line().encode(
+                alt.X('Tanggal Upload', title='Waktu', timeUnit=timeUnit[freq], axis=alt.Axis(tickCount='month')),
+                alt.Y('Jumlah Komentar', title='Jumlah Komen', aggregate='sum'),
+                color='Perusahaan'
+            ).properties(   
+                width=600,
+                height=400
+            )
+
+            #Menampilkan grafik
+            st.subheader('Grafik Perbandingan Jumlah Komen Dari ICE JCC dan JIEXPO')
+            st.altair_chart(chart2, use_container_width=True)
+
+        #Menampikan top 5 kategori untuk tiap perushaan
+        st.write('Berdasarkan grafik diatas berikut adalah top 5 kategori untuk tiap perusahaan')
+
+        def get_top_categories(df_merged, perusahaan, top_n=5):
+            perusahaan_df = df_merged[df_merged['Perusahaan'] == perusahaan]
+            top_categories = perusahaan_df.groupby('Isi Konten')['Jumlah Komentar'].sum().nlargest(top_n)
+            return top_categories
+
+        # Membuat dictionary untuk menyimpan hasil dari setiap perusahaan
+        top_categories_perusahaan_dict = {}
+
+        list_perusahaan = df_merged['Perusahaan'].unique().tolist()
+
+        for perusahaan in list_perusahaan:
+            top_categories_perusahaan_dict[perusahaan] = get_top_categories(df_merged, perusahaan)
+
+        # Menampilkan hasil dalam bentuk data frame
+        top_categories_df = pd.DataFrame(top_categories_perusahaan_dict)
+        top_categories_df = top_categories_df.rename_axis('Top Kategori').reset_index()
+        st.dataframe(top_categories_df) 
