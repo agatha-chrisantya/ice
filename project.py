@@ -128,6 +128,7 @@ else:
             st.plotly_chart(fig5, use_container_width=True)
         
         freq = st.radio("Frequency", ["Daily", "Monthly"])
+        st.subheader('Grafik Perbandingan Jumlah Like Dari ICE, JCC dan JIEXPO') 
         
         df3["Tanggal Upload"] = pd.to_datetime(df3["Tanggal Upload"], format="%d/%m/%Y")
         df4["Tanggal Upload"] = pd.to_datetime(df4["Tanggal Upload"], format="%d/%m/%Y")
@@ -208,6 +209,7 @@ else:
             st.plotly_chart(top3, use_container_width=True)
     else:
         freq = st.radio("Frequency", ["Daily", "Monthly"])
+        st.subheader('Grafik Perbandingan Jumlah Comment Dari ICE, JCC dan JIEXPO') 
         
         df3["Tanggal Upload"] = pd.to_datetime(df3["Tanggal Upload"], format="%d/%m/%Y")
         df4["Tanggal Upload"] = pd.to_datetime(df4["Tanggal Upload"], format="%d/%m/%Y")
