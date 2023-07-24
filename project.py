@@ -126,7 +126,7 @@ else:
             unsafe_allow_html=True,
         )
 
-    grafik = st.selectbox(label="", options=["Engagement Instagram", "Comments"])
+    grafik = st.selectbox("", ["Engagement Instagram", "Comments"])
 
     if grafik == "Engagement Instagram":
         col5, col6 = st.columns(2)
