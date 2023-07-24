@@ -86,42 +86,6 @@ if opt == "ICE":
         st.header("Engagement Rate")
         fig7 = px.line(df2, x="Month", y="Engagement Rate")
         st.plotly_chart(fig7, use_container_width=True)
-    # with col2:
-    #     st.header("Exposure on Instagram")
-    #     opsi = st.selectbox("", ("Likes", "Comment", "Followers", "Engagement Rate"))
-    #     if opsi == "Likes":
-    #         likes = pd.pivot_table(
-    #             data=df2,
-    #             index="Month",
-    #             values="Likes"
-    #         ).reset_index()
-    #         fig2 = px.line(likes, x="Month", y="Likes")
-    #         st.plotly_chart(fig2, use_container_width=True)
-    #     elif opsi == "Comment":
-    #         comment = pd.pivot_table(
-    #             data=df2,
-    #             index="Month",
-    #             values="Comments"
-    #         ).reset_index()
-    #         fig2 = px.line(comment, x="Month", y="Comments")
-    #         st.plotly_chart(fig2, use_container_width=True)
-    #     elif opsi == "Followers":
-    #         follower = pd.pivot_table(
-    #             data=df2,
-    #             index="Month",
-    #             values="Followers"
-    #         ).reset_index()
-    #         fig2 = px.line(follower, x="Month", y="Followers")
-    #         st.plotly_chart(fig2, use_container_width=True)
-    #     else:
-    #         rate = pd.pivot_table(
-    #             data=df2,
-    #             index="Month",
-    #             values="Engagement Rate"
-    #         ).reset_index()
-    #         fig2 = px.line(rate, x="Month", y="Engagement Rate")
-    #         fig2.update_layout(yaxis_title="Followers (%)")
-    #         st.plotly_chart(fig2, use_container_width=True)
 
 else:
     df3 = pd.read_excel("data ice.xlsx", "ig_ICE")
@@ -134,7 +98,36 @@ else:
     }
     df6 = pd.DataFrame(data)
 
-    grafik = st.selectbox("", ["Engagement Instagram", "Comments"])
+    with st.sidebar:
+        st.markdown(
+            """
+            <style>
+            .custom-col10 h3 {
+                font-size: 20px; /* Atur ukuran teks sesuai kebutuhan */
+            }
+            .custom-col10 p {
+                font-size: 16px; /* Atur ukuran teks sesuai kebutuhan */
+                text-align: justify;
+            }
+            </style>
+            """,
+            unsafe_allow_html=True,
+        )
+        st.markdown(
+            """
+            <div class="custom-col10">
+                <h3>Balai Sidang Jakarta Convention Center (JCC)</h3>
+                <p>berdiri sejak tahun 1992, sehingga memiliki 30 tahun pengalaman menangani acara besar dunia. JCC memiliki luas 30.000 sqm yang memiliki 2 bangunan utama yang digunakan sebagai Meeting Room dan Exhibition Halls.</p>
+                <br>
+                <h3>PT Jakarta International Expo</h3>
+                <p>adalah anak perusahaan dari Central Cipta Murdaya Group (CCM), yang dikenal dengan pengalaman dan reputasinya di berbagai industri di Indonesia, seperti manufaktur, perdagangan dan pameran. Reputasi yang sangat baik ini dibuktikan dengan kesuksesan berbagai acara dan proyek. Dengan total luas lahan kurang lebih 44 hektar, Jakarta International Expo (sering disingkat JIExpo) dikenal sebagai salah satu destinasi terbaik bagi para pelaku industri MICE di Indonesia.</p>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+    grafik = st.selectbox(label="", options=["Engagement Instagram", "Comments"])
+
     if grafik == "Engagement Instagram":
         col5, col6 = st.columns(2)
         with col5:
@@ -215,6 +208,7 @@ else:
             )
             top3.update_layout(layout, title="JCC")
             st.plotly_chart(top3, use_container_width=True)
+        
     else:
         st.subheader("Grafik Perbandingan Jumlah Comment")
         freq = st.radio("Frequency", ["Daily", "Monthly"])
