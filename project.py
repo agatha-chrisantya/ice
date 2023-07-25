@@ -91,12 +91,8 @@ else:
     df3 = pd.read_excel("data ice.xlsx", "ig_ICE")
     df4 = pd.read_excel("data ice.xlsx", "ig_JIEXPO")
     df5 = pd.read_excel("data ice.xlsx", "ig_JCC")
-    data = {
-        'Jumlah Pengikut' : [78600,18300,83500],
-        'Jumlah Post' : [3617, 3805, 1636],
-        'Perusahaan' : ['ICE', 'JCC', 'JIEXPO']
-    }
-    df6 = pd.DataFrame(data)
+    df6 = pd.read_excel("data ice.xlsx", "ER_IG")
+    df7 = pd.read_excel("data ice.xlsx", "ER_IG2")
 
     with st.sidebar:
         st.markdown(
@@ -129,17 +125,66 @@ else:
     grafik = st.selectbox("", ["Engagement Instagram", "Comments"])
 
     if grafik == "Engagement Instagram":
-        col5, col6 = st.columns(2)
-        with col5:
-            st.subheader("Followers")
-            fig4 = px.bar(df6, x="Perusahaan", y="Jumlah Pengikut", color="Perusahaan")
-            st.plotly_chart(fig4, use_container_width=True)
-        with col6:
-            st.subheader("Posts")
-            fig5 = px.bar(df6, x="Perusahaan", y="Jumlah Post", color="Perusahaan")
-            st.plotly_chart(fig5, use_container_width=True)
+        col7, col8 = st.columns(2)
+        with col7:
+            #Grafik engadmen by post
+            EngadmenIG = df7.groupby("Perusahaan", as_index=False).agg({"Jumlah_Post":"sum"})
+            ENG1 = px.pie(EngadmenIG, names="Perusahaan", values="Jumlah_Post", color="Perusahaan")
+            layout = go.Layout(
+                autosize=False,
+                width=400,
+                height=400,
+            )
+            ENG1.update_layout(layout, title="Perbandingan Jumlah Post Untuk ICE, JCC dan JIEXPO tanggal 26 Juni 2023 hingga 17 Juli 2023")
+            ENG1.update_layout(legend=dict(x=1, y=1))  # Penyesuaian gap grafik dan legend
+    
+            st.plotly_chart(ENG1, use_container_width=True)
+
+        with col8:
+            st.markdown('\n')
+            st.markdown('\n')
+            st.markdown('\n')
+            st.markdown('\n')
+            st.write("Berdasarkan garfik disamping dapat dilihat bahwa dalam rentan waktu 26 Juni 2023 hingga 17 Juni 2023, ICE memiliki jumlah post terbanyak.")
+            st.write("Kemudian bagaimana dengan pertumbuhan pengikut harian instagram ICE dibandingkan dengan kompetitor? ")
+            st.write("Untuk perbandingannya dapat dilihat pada grafik di bawah")
+        #Grafik pertumbuhan followers harian
+        # Mengubah nama kolom
+        df6 = df6.rename(columns={
+            'ice_day_followers': 'ICE',
+            'jiexpo_day_followers': 'JIEXPO',
+            'jcc_day_followers': 'JCC'
+        })
+
+        # Membuat multiselect untuk memilih kolom yang ingin ditampilkan
+        kolom_options = ['ICE', 'JIEXPO', 'JCC']
+        multitahun = st.multiselect(
+            "Pilih kolom",
+            kolom_options,
+            default=['ICE']  # Nilai default saat aplikasi pertama kali dijalankan
+        )
         
-        st.subheader("Grafik Perbandingan Jumlah Like") 
+        # Filter dataframe berdasarkan kolom-kolom yang dipilih
+        filtered_df = df6[['date'] + multitahun]
+        
+        # Melt dataframe menjadi format long untuk line chart dengan Altair
+        melted_df = filtered_df.melt('date', var_name='Kolom', value_name='Followers')
+
+        # Membuat line chart dengan Altair
+        line_chart = alt.Chart(melted_df).mark_line().encode(
+            alt.X('date:T', title='Tanggal'),
+            alt.Y('Followers:Q', title='Jumlah Pengikut'),
+            color='Kolom:N',
+            tooltip=['Kolom:N', 'Followers:Q']
+        ).properties(
+            title=f"Penambahan Pengikut Instagram Harian {', '.join(map(str, multitahun))}"
+        )
+
+        # Menampilkan chart menggunakan Streamlit
+        st.altair_chart(line_chart, use_container_width=True)
+
+        #Proses Grafik Like Instagram
+        st.subheader("Grafik Perbandingan Jumlah Like")
         freq = st.radio("Frequency", ["Daily", "Monthly"])
         
         df3["Tanggal Upload"] = pd.to_datetime(df3["Tanggal Upload"], format="%d/%m/%Y")
@@ -150,7 +195,8 @@ else:
             df4_1 = df4.groupby("Tanggal Upload", as_index=False).agg({"Jumlah Like":"sum"})
             df5_1 = df5.groupby("Tanggal Upload", as_index=False).agg({"Jumlah Like":"sum"})
             merged = pd.concat([df3_1, df4_1, df5_1], keys=["ICE", "JIEXPO", "JCC"])
-            fig6 = px.line(merged, x="Tanggal Upload", y="Jumlah Like", color=merged.index.get_level_values(0))
+            fig6 = px.line(merged, x="Tanggal Upload", y="Jumlah Like",color=merged.index.get_level_values(0))
+
         else:
             df3["Month"] = df3["Tanggal Upload"].dt.to_period("M").astype(str)
             df4["Month"] = df4["Tanggal Upload"].dt.to_period("M").astype(str)
@@ -165,8 +211,8 @@ else:
         
         st.subheader("Top Categories")
     
-        col7, col8, col9 = st.columns(3)
-        with col7:
+        col9, col10, col11 = st.columns(3)
+        with col9:
             top_ice = df3.groupby("Isi Konten", as_index=False).agg({"Jumlah Like":"sum"})
             top_sort = top_ice.sort_values(by="Jumlah Like", ascending=False)
             top_cat = top_sort["Isi Konten"].head(5)
@@ -180,7 +226,7 @@ else:
             )
             top1.update_layout(layout, title="ICE")
             st.plotly_chart(top1, use_container_width=True)
-        with col8:
+        with col10:
             top_jiexpo = df4.groupby("Isi Konten", as_index=False).agg({"Jumlah Like":"sum"})
             top_sort = top_jiexpo.sort_values(by="Jumlah Like", ascending=False)
             top_cat = top_sort["Isi Konten"].head(5)
@@ -194,7 +240,7 @@ else:
             )
             top2.update_layout(layout, title="JIEXPO")
             st.plotly_chart(top2, use_container_width=True)
-        with col9:
+        with col11:
             top_jcc = df5.groupby("Isi Konten", as_index=False).agg({"Jumlah Like":"sum"})
             top_sort = top_jcc.sort_values(by="Jumlah Like", ascending=False)
             top_cat = top_sort["Isi Konten"].head(5)
@@ -235,9 +281,9 @@ else:
         st.plotly_chart(fig6, use_container_width=True)
 
         st.subheader("Top Categories")
-        col7, col8, col9 = st.columns(3)
+        col9, col10, col11 = st.columns(3)
 
-        with col7:
+        with col9:
             top_ice = df3.groupby("Isi Konten", as_index=False).agg({"Jumlah Komentar":"sum"})
             top_sort = top_ice.sort_values(by="Jumlah Komentar", ascending=False)
             top_cat = top_sort["Isi Konten"].head(5)
@@ -251,7 +297,7 @@ else:
             )
             top1.update_layout(layout, title="ICE")
             st.plotly_chart(top1, use_container_width=True)
-        with col8:
+        with col10:
             top_jiexpo = df4.groupby("Isi Konten", as_index=False).agg({"Jumlah Komentar":"sum"})
             top_sort = top_jiexpo.sort_values(by="Jumlah Komentar", ascending=False)
             top_cat = top_sort["Isi Konten"].head(5)
@@ -265,7 +311,7 @@ else:
             )
             top2.update_layout(layout, title="JIEXPO")
             st.plotly_chart(top2, use_container_width=True)
-        with col9:
+        with col11:
             top_jcc = df5.groupby("Isi Konten", as_index=False).agg({"Jumlah Komentar":"sum"})
             top_sort = top_jcc.sort_values(by="Jumlah Komentar", ascending=False)
             top_cat = top_sort["Isi Konten"].head(5)
