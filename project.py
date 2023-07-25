@@ -126,6 +126,7 @@ else:
     grafik = st.selectbox("", ["Engagement Instagram", "Comments"])
 
     if grafik == "Engagement Instagram":
+        st.subheader("Perbandingan Jumlah Post")
         col7, col8 = st.columns(2)
         with col7:
             #Grafik engadmen by post
@@ -136,19 +137,27 @@ else:
                 width=400,
                 height=400,
             )
-            ENG1.update_layout(layout, title="Perbandingan Jumlah Post Untuk ICE, JCC dan JIEXPO tanggal 26 Juni 2023 hingga 17 Juli 2023")
-            ENG1.update_layout(legend=dict(x=1, y=1))  # Penyesuaian gap grafik dan legend
-    
+            # ENG1.update_layout(layout)  # Penyesuaian gap grafik dan legend
+            ENG1.update_layout(layout,legend=dict(orientation="h",x=0.5, y=-0.1, xanchor='center', yanchor='top'))
+            ENG1.update_layout(margin=dict(t=20, b=20, l=50, r=50))
             st.plotly_chart(ENG1, use_container_width=True)
 
         with col8:
-            st.markdown('\n')
-            st.markdown('\n')
-            st.markdown('\n')
-            st.markdown('\n')
-            st.write("Berdasarkan garfik disamping dapat dilihat bahwa dalam rentan waktu 26 Juni 2023 hingga 17 Juni 2023, ICE memiliki jumlah post terbanyak.")
-            st.write("Kemudian bagaimana dengan pertumbuhan pengikut harian instagram ICE dibandingkan dengan kompetitor? ")
-            st.write("Untuk perbandingannya dapat dilihat pada grafik di bawah")
+            EngadmenIG = df7.groupby("Perusahaan", as_index=False).agg({"Jumlah_Post":"sum"})
+            EngadmenIG_sorted = EngadmenIG.sort_values(by="Jumlah_Post", ascending=False)
+            perusahaan_terbesar = EngadmenIG_sorted.iloc[0]["Perusahaan"]
+            # css_center_text = '''
+            #     <style>
+            #         .center-text {
+            #             display: flex;
+            #             justify-content: center;
+            #         }
+            #     </style>
+            # '''
+            teks = f"Berdasarkan grafik disamping dapat dilihat bahwa dalam rentan waktu 26 Juni 2023 hingga 17 Juni 2023, {perusahaan_terbesar} memiliki jumlah post terbanyak. Kemudian bagaimana dengan pertumbuhan pengikut harian instagram {perusahaan_terbesar} dibandingkan dengan kompetitor? Untuk perbandingannya dapat dilihat pada grafik di bawah."
+            style = "font-size: 18px; text-align: justify; margin-top: 80px; margin-bottom: 20px;"
+            # st.markdown("<p style='font-size: 18px; text-align: justify;'>{}</p>".format(teks), unsafe_allow_html=True)
+            st.markdown(f"<p style='{style}'>{teks}</p>", unsafe_allow_html=True)
         #Grafik pertumbuhan followers harian
         # Mengubah nama kolom
         df6 = df6.rename(columns={
@@ -160,7 +169,7 @@ else:
         # Membuat multiselect untuk memilih kolom yang ingin ditampilkan
         kolom_options = ['ICE', 'JIEXPO', 'JCC']
         multitahun = st.multiselect(
-            "Pilih kolom",
+            "Pilih Perusahaan",
             kolom_options,
             default=['ICE']  # Nilai default saat aplikasi pertama kali dijalankan
         )
