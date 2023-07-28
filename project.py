@@ -105,7 +105,7 @@ if opt == "ICE":
         data2 = {"Tahun": curr_year, "Visitor":x}
         df_new = pd.DataFrame(data2, index=[0])
         new = pd.concat([df4,df_new], ignore_index=True)
-        fig2 = px.line(df4, x="Tahun", y="Visitor")
+        fig2 = px.line(new, x="Tahun", y="Visitor")
         st.plotly_chart(fig2, use_container_width=True)
         st.markdown(
             """
