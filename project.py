@@ -161,10 +161,10 @@ else:
             """
             <div class="custom-col10">
                 <h3>Balai Sidang Jakarta Convention Center (JCC)</h3>
-                <p>berdiri sejak tahun 1992, sehingga memiliki 30 tahun pengalaman menangani acara besar dunia. JCC memiliki luas 30.000 sqm yang memiliki 2 bangunan utama yang digunakan sebagai Meeting Room dan Exhibition Halls.</p>
+                <p>berdiri sejak tahun 1992, memiliki 30 tahun pengalaman dalam menangani acara besar dunia. JCC memiliki luas 30.000 sqm yang memiliki 2 bangunan utama yang digunakan sebagai Meeting Room dan Exhibition Halls.</p>
                 <br>
                 <h3>PT Jakarta International Expo</h3>
-                <p>adalah anak perusahaan dari Central Cipta Murdaya Group (CCM), yang dikenal dengan pengalaman dan reputasinya di berbagai industri di Indonesia, seperti manufaktur, perdagangan dan pameran. Reputasi yang sangat baik ini dibuktikan dengan kesuksesan berbagai acara dan proyek. Dengan total luas lahan kurang lebih 44 hektar, Jakarta International Expo (sering disingkat JIExpo) dikenal sebagai salah satu destinasi terbaik bagi para pelaku industri MICE di Indonesia.</p>
+                <p>adalah anak perusahaan dari Central Cipta Murdaya Group (CCM), yang dikenal dengan pengalaman dan reputasinya di berbagai industri di Indonesia, seperti manufaktur, perdagangan dan pameran. Reputasi yang sangat baik ini dibuktikan dengan kesuksesan berbagai acara dan proyek. Jakarta International Expo atau JIExpo memiliki luas lahan sekitar lebih 44 hektar.</p>
             </div>
             """,
             unsafe_allow_html=True,
@@ -242,7 +242,7 @@ else:
         st.markdown(
             """
             <div style="text-align: justify;margin-top:-25px">
-                Dari hasil visualisasi jumlah pengikut harian terhadap ICE, JCC, dan JIEXPO, Diperoleh bahwa JIEXPO mempunyai 
+                Dari hasil visualisasi jumlah pengikut harian terhadap ICE, JCC, dan JIEXPO. Diperoleh bahwa JIEXPO mempunyai 
                 kenaikan yang tinggi pada hari tertentu. Perlu dilakukan peninjauan ulang dalam hari pada saat 
                 jumlah pengikut harian tinggi bahwa terdapat suatu acara atau kegiatan yang mengakibatkan kenaikan jumlah pengikut tersebut.
             </div>
