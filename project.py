@@ -112,7 +112,7 @@ if opt == "ICE":
             <div style="text-align: justify;margin-top:-35px">
                 Dari data yang ada, dapat dibuat visualisasi untuk melihat banyaknya pengunjung yang ada di ICE. 
                 Dengan mengesampingkan kategori pengunjung yang datang, diperoleh kenaikan yang signifikan mulai dari tahun 2015 hingga 2018. 
-                Penurunan yang drastic terjadi mulai tahun 2018 hingga 2022. Perlu dilakukan pengecekan kembali pada tahun ini, apakah pencatatan pengunjung 
+                Penurunan yang drastis terjadi mulai tahun 2018 hingga 2022. Perlu dilakukan pengecekan kembali pada tahun ini, apakah pencatatan pengunjung 
                 tercatat dengan baik, mengingat mulai tahun 2020 terjadi pandemic sehingga kebanyakan kegiatan dibatalkan dan diubah menjadi luring.
             </div>
             """,
