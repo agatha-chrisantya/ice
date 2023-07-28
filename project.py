@@ -80,7 +80,7 @@ if opt == "ICE":
         st.markdown(
             """
             <div style="text-align: right; font-size: 12px; color: #808080;margin-top:-50px">
-                Data Januari 2023 s.d. Maret 2023.
+                Data Januari 2022 s.d. Maret 2023.
             </div>
             """,
             unsafe_allow_html=True
