@@ -242,8 +242,8 @@ else:
         st.markdown(
             """
             <div style="text-align: justify;margin-top:-25px">
-                Dari hasil visualisasi jumlah pengikut harian terhadap ICE, JCC, dan JIEXPO, terlihat bahwa JIEXPO sangat 
-                mempunyai kenaikan yang tinggi pada hari tertentu. Perlu dilakukan peninjauan ulang dalam hari pada saat 
+                Dari hasil visualisasi jumlah pengikut harian terhadap ICE, JCC, dan JIEXPO, Diperoleh bahwa JIEXPO mempunyai 
+                kenaikan yang tinggi pada hari tertentu. Perlu dilakukan peninjauan ulang dalam hari pada saat 
                 jumlah pengikut harian tinggi bahwa terdapat suatu acara atau kegiatan yang mengakibatkan kenaikan jumlah pengikut tersebut.
             </div>
             """,
